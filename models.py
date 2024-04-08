@@ -1,4 +1,4 @@
-from sqlalchemy import DATE, VARCHAR, CHAR, Enum, \
+from sqlalchemy import DATE, VARCHAR, CHAR, FLOAT, Enum, \
                         INTEGER, SMALLINT, TINYINT, BOOLEAN, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
 from datetime import date
@@ -8,7 +8,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class autores(Base):
+class Autores(Base):
     __tablename__ = "autores"
     id_autores: Mapped[int] = mapped_column('id_autores', INTEGER, autoincrement=True, nullable=False, primary_key=True)
     nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
@@ -25,17 +25,38 @@ class Avaliacao(Base):
     cliente_id_cliente: Mapped[int] = mapped_column(INTEGER,ForeignKey(cliente.id_cliente), nullable=False)
     
 
-class Filial(Base):
-    __tablename__ = "filial"
-    codigo: Mapped[int] = mapped_column(INTEGER, ForeignKey(autores.id_autores), primary_key=True)
-    tipo: Mapped[str] = mapped_column(Enum("Centro Universitário", "Universidade", "Faculdade"), nullable=False)
+class Categoria(Base):
+    __tablename__ = "categoria"
+    id_categoria: Mapped[int] = mapped_column(INTEGER, primary_key=True, unsigned=True, autoincrement=True)
+    nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
+    classificacao_indicativa: Mapped[int] = mapped_column(TINYINT, nullable=False, unsigned=True)
 
 
-class Escola(Base):
-    __tablename__ = "escola"
-    codigo_escola: Mapped[int] = mapped_column(SMALLINT, primary_key=True, autoincrement=True)
-    nome: Mapped[str] = mapped_column(VARCHAR(256), nullable=False)
-    filial_codigo: Mapped[int] = mapped_column(INTEGER, ForeignKey(Filial.codigo), nullable=False)
+class Cliente(Base):
+    __tablename__ = "cliente"
+    id_cliente: Mapped[int] = mapped_column(INTEGER, primary_key=True, nullable=False, autoincrement=True)
+    nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
+    login: Mapped[str] = mapped_column(VARCHAR(20), nullable=False, unique=True)
+    senha: Mapped[str] = mapped_column(VARCHAR(20), nullable=False)
+    cpf: Mapped[int] = mapped_column(TINYINT, nullable=False, unsigned=True)
+    email: Mapped[str] = mapped_column(VARCHAR(50), nullable=False, unique=True)
+    quantidade_compras: Mapped[int] = mapped_column(SMALLINT, nullable=False, default=0)
+
+class Editora(Base):
+    __tablename__ = "editora"
+    id_editora: Mapped[int] = mapped_column(INTEGER, primary_key=True, nullable=False, autoincrement=True)
+    data: Mapped[date] = mapped_column(DATE, nullable=False)
+    nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
+    exemplares_vendidos: Mapped[int] = mapped_column(SMALLINT, nullable=False, default=0)
+
+class Livro(Base):
+    __tablename__ = "livro"
+    id_livro: Mapped[int] = mapped_column(INTEGER, primary_key=True, unique=True, nullable=False, autoincrement=True)
+    nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
+    preco: Mapped[float] = mapped_column(FLOAT, unsigned=True, nullable=True)
+    quantidade_estoque: Mapped[int] = mapped_column(INTEGER, unsigned=True, nullable=False)
+    quantidade_vendidas: Mapped[int] = mapped_column(SMALLINT, unsigned=True, nullable=False)
+    data_publicacao: Mapped[date] = mapped_column(DATE, nullable=False)
 
 Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
