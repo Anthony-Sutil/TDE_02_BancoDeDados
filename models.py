@@ -58,19 +58,19 @@ class Categoria(Base):
     nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
     classificacao_indicativa: Mapped[int] = mapped_column(SMALLINT, nullable=False)
 
-class Compra(Base):
-    id_venda: Mapped[int] = mapped_column(INTEGER, primary_key=True, nullable=False, autoincrement=True)
-    data_compra: Mapped[date] = mapped_column(DATE, nullable=False)
-    metodo_pagamento_id_metodo_pagamento: Mapped[int] = mapped_column(INTEGER, ForeignKey(Metodo_pagamento.id_metodo_pagamento), nullable=False)
-    cliente_id_cliente: Mapped[int] = mapped_column(INTEGER, ForeignKey(Cliente.id_cliente), nullable=False)
-
-
 class Editora(Base):
     __tablename__ = "editora"
     id_editora: Mapped[int] = mapped_column(INTEGER, primary_key=True, nullable=False, autoincrement=True)
     data: Mapped[date] = mapped_column(DATE, nullable=False)
     nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
     exemplares_vendidos: Mapped[int] = mapped_column(INTEGER, nullable=False, default=0)
+
+class Venda(Base):
+    __tablename__ = "venda"
+    id_venda: Mapped[int] = mapped_column(INTEGER, primary_key=True, nullable=False, autoincrement=True)
+    data: Mapped[date] = mapped_column(DATE, nullable=False)
+    metodo_pagamento_id_metodo_pagamento: Mapped[int] = mapped_column(INTEGER,ForeignKey(Metodo_pagamento.id_metodo_pagamento), nullable=False)
+    cliente_id_cliente: Mapped[int] = mapped_column(INTEGER,ForeignKey(Cliente.id_cliente), nullable=False)
 
 Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
