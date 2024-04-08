@@ -72,5 +72,27 @@ class Venda(Base):
     metodo_pagamento_id_metodo_pagamento: Mapped[int] = mapped_column(INTEGER,ForeignKey(Metodo_pagamento.id_metodo_pagamento), nullable=False)
     cliente_id_cliente: Mapped[int] = mapped_column(INTEGER,ForeignKey(Cliente.id_cliente), nullable=False)
 
+class Livro_autores(Base):
+    __tablename__ = "livro_has_autores"
+    autor_id_autores: Mapped[int] = mapped_column(INTEGER,ForeignKey(Autores.id_autores), primary_key=True, nullable=False)
+    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro), primary_key=True, nullable=False)
+
+class Livro_categoria(Base):
+    __tablename__ = "livro_has_categoria"
+    categoria_id_categoria: Mapped[int] = mapped_column(INTEGER,ForeignKey(Categoria.id_categoria), primary_key=True, nullable=False)
+    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro), primary_key=True, nullable=False)
+
+class Livro_editora(Base):
+    __tablename__ = "livro_has_editora"
+    editora_id_editora: Mapped[int] = mapped_column(INTEGER,ForeignKey(Editora.id_editora), primary_key=True, nullable=False)
+    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro), primary_key=True, nullable=False)
+
+class Livro_venda(Base):
+    __tablename__ = "livro_has_venda"
+    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro), primary_key=True, nullable=False)
+    venda_id_venda: Mapped[int] = mapped_column(INTEGER,ForeignKey(Venda.id_venda), primary_key=True, nullable=False)
+    quantidade: Mapped[int] = mapped_column(SMALLINT, nullable=False)
+    preco: Mapped[float] = mapped_column(FLOAT, nullable=False)
+
 Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)

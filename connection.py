@@ -8,7 +8,7 @@ USER = "root"
 PASSWD = quote("root")
 HOST = "localhost" # 127.0.0.1
 PORT = 3306
-DATABASE = "testesql"
+DATABASE = "Mr.Paper"
 
 url = f'mysql+pymysql://{USER}:{PASSWD}@{HOST}:{PORT}/{DATABASE}'
 
