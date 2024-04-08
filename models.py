@@ -1,5 +1,5 @@
 from sqlalchemy import DATE, VARCHAR, CHAR, FLOAT, Enum, \
-                        INTEGER, SMALLINT, TINYINT, BOOLEAN, ForeignKey
+                        INTEGER, SMALLINT, BOOLEAN, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
 from datetime import date
 from connection import engine
@@ -19,10 +19,18 @@ class Livro(Base):
     __tablename__ = "livro"
     id_livro: Mapped[int] = mapped_column(INTEGER, primary_key=True, unique=True, nullable=False, autoincrement=True)
     nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
-    preco: Mapped[float] = mapped_column(FLOAT, unsigned=True, nullable=True)
-    quantidade_estoque: Mapped[int] = mapped_column(INTEGER, unsigned=True, nullable=False)
-    quantidade_vendidas: Mapped[int] = mapped_column(SMALLINT, unsigned=True, nullable=False)
+    preco: Mapped[float] = mapped_column(FLOAT, nullable=True)
+    quantidade_estoque: Mapped[int] = mapped_column(INTEGER, nullable=False)
+    quantidade_vendidas: Mapped[int] = mapped_column(SMALLINT, nullable=False)
     data_publicacao: Mapped[date] = mapped_column(DATE, nullable=False)
+
+
+
+class Metodo_pagamento(Base):
+    __tablename__ = "metodo_pagamento"
+    id_metodo_pagamento: Mapped[int] = mapped_column(INTEGER, primary_key=True, nullable=False, autoincrement=True)
+    parcelas: Mapped[int] = mapped_column(SMALLINT, nullable=False)
+    tipo: Mapped[str] = mapped_column(VARCHAR(7), nullable=False)
 
 class Cliente(Base):
     __tablename__ = "cliente"
@@ -30,14 +38,14 @@ class Cliente(Base):
     nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
     login: Mapped[str] = mapped_column(VARCHAR(20), nullable=False, unique=True)
     senha: Mapped[str] = mapped_column(VARCHAR(20), nullable=False)
-    cpf: Mapped[int] = mapped_column(TINYINT, nullable=False, unsigned=True)
+    cpf: Mapped[int] = mapped_column(SMALLINT, unique=True, nullable=False)
     email: Mapped[str] = mapped_column(VARCHAR(50), nullable=False, unique=True)
     quantidade_compras: Mapped[int] = mapped_column(SMALLINT, nullable=False, default=0)
 
 class Avaliacao(Base):
     __tablename__ = "avaliacao"
     id_avaliacao: Mapped[int] = mapped_column(INTEGER, unique=True, autoincrement=True, nullable=False, primary_key=True)
-    estrelas: Mapped[int] = mapped_column(TINYINT, nullable=False, unsigned=True)
+    estrelas: Mapped[int] = mapped_column(SMALLINT, nullable=False)
     data: Mapped[date] = mapped_column(DATE, nullable=False)
     avaliador: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
     livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro), nullable=False)
@@ -46,18 +54,23 @@ class Avaliacao(Base):
 
 class Categoria(Base):
     __tablename__ = "categoria"
-    id_categoria: Mapped[int] = mapped_column(INTEGER, primary_key=True, unsigned=True, autoincrement=True)
+    id_categoria: Mapped[int] = mapped_column(INTEGER, primary_key=True, autoincrement=True)
     nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
-    classificacao_indicativa: Mapped[int] = mapped_column(TINYINT, nullable=False, unsigned=True)
+    classificacao_indicativa: Mapped[int] = mapped_column(SMALLINT, nullable=False)
+
+class Compra(Base):
+    id_venda: Mapped[int] = mapped_column(INTEGER, primary_key=True, nullable=False, autoincrement=True)
+    data_compra: Mapped[date] = mapped_column(DATE, nullable=False)
+    metodo_pagamento_id_metodo_pagamento: Mapped[int] = mapped_column(INTEGER, ForeignKey(Metodo_pagamento.id_metodo_pagamento), nullable=False)
+    cliente_id_cliente: Mapped[int] = mapped_column(INTEGER, ForeignKey(Cliente.id_cliente), nullable=False)
+
 
 class Editora(Base):
     __tablename__ = "editora"
     id_editora: Mapped[int] = mapped_column(INTEGER, primary_key=True, nullable=False, autoincrement=True)
     data: Mapped[date] = mapped_column(DATE, nullable=False)
     nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
-    exemplares_vendidos: Mapped[int] = mapped_column(SMALLINT, nullable=False, default=0)
-
-
+    exemplares_vendidos: Mapped[int] = mapped_column(INTEGER, nullable=False, default=0)
 
 Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
