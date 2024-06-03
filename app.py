@@ -302,59 +302,63 @@ session.delete(categoria_para_excluir)
 # Confirmar as exclusões na sessão
 session.commit()
 
-# Cria uma sessão
-Session = sessionmaker(bind=engine)
-session = Session()
 
-# 1. Excluir um autor pelo ID
-id_autor = 1
-autor = session.query(Autores).filter(Autores.id_autores == id_autor).first()
-if autor:
-    session.delete(autor)
-    print(f"Autor com ID {id_autor} excluído.")
-else:
-    print(f"Autor com ID {id_autor} não encontrado.")
 
-# 2. Excluir um livro pelo nome
-livro_nome = 'Nome do Livro'
-livro = session.query(Livro).filter(Livro.nome == livro_nome).first()
-if livro:
-    session.delete(livro)
-    print(f"Livro com nome '{livro_nome}' excluído.")
-else:
-    print(f"Livro com nome '{livro_nome}' não encontrado.")
 
-# 3. Excluir um método de pagamento pelo ID
-metodo_pagamento_id = 1
-metodo_pagamento = session.query(Metodo_pagamento).filter(Metodo_pagamento.id_metodo_pagamento == metodo_pagamento_id).first()
-if metodo_pagamento:
-    session.delete(metodo_pagamento)
-    print(f"Método de pagamento com ID {metodo_pagamento_id} excluído.")
-else:
-    print(f"Método de pagamento com ID {metodo_pagamento_id} não encontrado.")
 
-# 4. Excluir um cliente pelo login
-cliente_login = 'login_cliente'
-cliente = session.query(Cliente).filter(Cliente.login == cliente_login).first()
-if cliente:
-    session.delete(cliente)
-    print(f"Cliente com login '{cliente_login}' excluído.")
-else:
-    print(f"Cliente com login '{cliente_login}' não encontrado.")
 
-# 5. Excluir uma avaliação por ID
-id_avaliacao= 1
-avaliacao = session.query(Avaliacao).filter(Avaliacao.id_avaliacao == id_avaliacao).first()
-if avaliacao:
-    session.delete(avaliacao)
-    print(f"Avaliação com ID {id_avaliacao} excluída.")
-else:
-    print(f"Avaliação com ID {id_avaliacao} não encontrada.")
+# Criar uma sessão (msm codigo de exclusao d cima com algumas mudancas pra ver se roda, verificar)
+session = Session(bind=engine)
 
-# Confirmar as mudanças
-session.commit()
-print("Exclusões realizadas com sucesso.")
+try:
+    # Excluir um registro da tabela Avaliacao
+    avaliacao_para_excluir = session.query(Avaliacao).filter(Avaliacao.id_avaliacao == 1).one_or_none()
+    if avaliacao_para_excluir:
+        session.delete(avaliacao_para_excluir)
+        print("Avaliacao excluída.")
+    else:
+        print("Avaliacao não encontrada.")
 
-# Fechar a sessão
-session.close()
+    # Excluir um registro da tabela Livro
+    livro_para_excluir = session.query(Livro).filter(Livro.id_livro == 1).one_or_none()
+    if livro_para_excluir:
+        session.delete(livro_para_excluir)
+        print("Livro excluído.")
+    else:
+        print("Livro não encontrado.")
 
+    # Excluir um registro da tabela Metodo_pagamento
+    metodo_pagamento_para_excluir = session.query(Metodo_pagamento).filter(Metodo_pagamento.id_metodo_pagamento == 1).one_or_none()
+    if metodo_pagamento_para_excluir:
+        session.delete(metodo_pagamento_para_excluir)
+        print("Método de pagamento excluído.")
+    else:
+        print("Método de pagamento não encontrado.")
+
+    # Excluir um registro da tabela Cliente
+    cliente_para_excluir = session.query(Cliente).filter(Cliente.id_cliente == 1).one_or_none()
+    if cliente_para_excluir:
+        session.delete(cliente_para_excluir)
+        print("Cliente excluído.")
+    else:
+        print("Cliente não encontrado.")
+
+    # Excluir um registro da tabela Categoria
+    categoria_para_excluir = session.query(Categoria).filter(Categoria.id_categoria == 1).one_or_none()
+    if categoria_para_excluir:
+        session.delete(categoria_para_excluir)
+        print("Categoria excluída.")
+    else:
+        print("Categoria não encontrada.")
+
+    # Confirmar as mudanças
+    session.commit()
+    print("Exclusões realizadas com sucesso.")
+
+except Exception as e:
+    session.rollback()
+    print(f"Ocorreu um erro: {e}")
+
+finally:
+    # Fechar a sessão
+    session.close()
