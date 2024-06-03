@@ -247,3 +247,58 @@ livro_vendas = [
 session.add_all(livro_vendas)
 session.commit()
 
+# Atualizar registros na tabela Cliente
+clientes_para_atualizar = session.query(Cliente).filter(Cliente.id_cliente <= 5).all()
+for cliente in clientes_para_atualizar:
+    cliente.quantidade_compras += 1
+
+# Atualizar registros na tabela Livro
+livros_para_atualizar = session.query(Livro).filter(Livro.id_livro <= 5).all()
+for livro in livros_para_atualizar:
+    livro.quantidade_estoque -= 10
+    livro.preco += 5.00
+
+# Atualizar registros na tabela Autores
+autores_para_atualizar = session.query(Autores).filter(Autores.id_autores <= 5).all()
+for autor in autores_para_atualizar:
+    autor.biografia = f"Biografia atualizada do {autor.nome}"
+
+# Atualizar registros na tabela Metodo_pagamento
+metodos_pagamento_para_atualizar = session.query(Metodo_pagamento).filter(Metodo_pagamento.id_metodo_pagamento <= 5).all()
+for metodo_pagamento in metodos_pagamento_para_atualizar:
+    metodo_pagamento.parcelas += 1
+
+# Atualizar registros na tabela Editora
+editoras_para_atualizar = session.query(Editora).filter(Editora.id_editora <= 5).all()
+for editora in editoras_para_atualizar:
+    editora.exemplares_vendidos += 100
+
+# Confirmar as atualizações na sessão
+session.commit()
+
+
+
+
+# Excluir um registro da tabela Avaliacao
+avaliacao_para_excluir = session.query(Avaliacao).filter(Avaliacao.id_avaliacao == 1).one()
+session.delete(avaliacao_para_excluir)
+
+# Excluir um registro da tabela Livro
+livro_para_excluir = session.query(Livro).filter(Livro.id_livro == 1).one()
+session.delete(livro_para_excluir)
+
+# Excluir um registro da tabela Metodo_pagamento
+metodo_pagamento_para_excluir = session.query(Metodo_pagamento).filter(Metodo_pagamento.id_metodo_pagamento == 1).one()
+session.delete(metodo_pagamento_para_excluir)
+
+# Excluir um registro da tabela Cliente
+cliente_para_excluir = session.query(Cliente).filter(Cliente.id_cliente == 1).one()
+session.delete(cliente_para_excluir)
+
+# Excluir um registro da tabela Categoria
+categoria_para_excluir = session.query(Categoria).filter(Categoria.id_categoria == 1).one()
+session.delete(categoria_para_excluir)
+
+# Confirmar as exclusões na sessão
+session.commit()
+
