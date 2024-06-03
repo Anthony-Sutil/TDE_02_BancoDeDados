@@ -5,7 +5,7 @@ from sqlalchemy_utils import database_exists, create_database
 
 
 USER = "root"
-PASSWD = quote("root")
+PASSWD = quote("")
 HOST = "localhost" # 127.0.0.1
 PORT = 3306
 DATABASE = "Mr.Paper"
