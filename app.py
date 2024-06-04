@@ -48,9 +48,8 @@ class Avaliacao(Base):
     estrelas: Mapped[int] = mapped_column(SMALLINT, nullable=False)
     data: Mapped[date] = mapped_column(DATE, nullable=False)
     avaliador: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
-    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro), nullable=False)
-    cliente_id_cliente: Mapped[int] = mapped_column(INTEGER,ForeignKey(Cliente.id_cliente), nullable=False)
-    
+    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro, ondelete="CASCADE"), nullable=False)
+    cliente_id_cliente: Mapped[int] = mapped_column(INTEGER,ForeignKey(Cliente.id_cliente, ondelete="CASCADE"), nullable=False)
 
 class Categoria(Base):
     __tablename__ = "categoria"
@@ -69,28 +68,28 @@ class Venda(Base):
     __tablename__ = "venda"
     id_venda: Mapped[int] = mapped_column(INTEGER, primary_key=True, nullable=False, autoincrement=True)
     data: Mapped[date] = mapped_column(DATE, nullable=False)
-    metodo_pagamento_id_metodo_pagamento: Mapped[int] = mapped_column(INTEGER,ForeignKey(Metodo_pagamento.id_metodo_pagamento), nullable=False)
-    cliente_id_cliente: Mapped[int] = mapped_column(INTEGER,ForeignKey(Cliente.id_cliente), nullable=False)
+    metodo_pagamento_id_metodo_pagamento: Mapped[int] = mapped_column(INTEGER,ForeignKey(Metodo_pagamento.id_metodo_pagamento, ondelete="CASCADE"), nullable=False)
+    cliente_id_cliente: Mapped[int] = mapped_column(INTEGER,ForeignKey(Cliente.id_cliente, ondelete="CASCADE"), nullable=False)
 
 class Livro_autores(Base):
     __tablename__ = "livro_has_autores"
-    autor_id_autores: Mapped[int] = mapped_column(INTEGER,ForeignKey(Autores.id_autores), primary_key=True, nullable=False)
-    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro), primary_key=True, nullable=False)
+    autor_id_autores: Mapped[int] = mapped_column(INTEGER,ForeignKey(Autores.id_autores, ondelete="CASCADE"), primary_key=True, nullable=False)
+    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro, ondelete="CASCADE"), primary_key=True, nullable=False)
 
 class Livro_categoria(Base):
     __tablename__ = "livro_has_categoria"
-    categoria_id_categoria: Mapped[int] = mapped_column(INTEGER,ForeignKey(Categoria.id_categoria), primary_key=True, nullable=False)
-    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro), primary_key=True, nullable=False)
+    categoria_id_categoria: Mapped[int] = mapped_column(INTEGER,ForeignKey(Categoria.id_categoria, ondelete="CASCADE"), primary_key=True, nullable=False)
+    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro, ondelete="CASCADE"), primary_key=True, nullable=False)
 
 class Livro_editora(Base):
     __tablename__ = "livro_has_editora"
-    editora_id_editora: Mapped[int] = mapped_column(INTEGER,ForeignKey(Editora.id_editora), primary_key=True, nullable=False)
-    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro), primary_key=True, nullable=False)
+    editora_id_editora: Mapped[int] = mapped_column(INTEGER,ForeignKey(Editora.id_editora, ondelete="CASCADE"), primary_key=True, nullable=False)
+    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro, ondelete="CASCADE"), primary_key=True, nullable=False)
 
 class Livro_venda(Base):
     __tablename__ = "livro_has_venda"
-    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro), primary_key=True, nullable=False)
-    venda_id_venda: Mapped[int] = mapped_column(INTEGER,ForeignKey(Venda.id_venda), primary_key=True, nullable=False)
+    livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro, ondelete="CASCADE"), primary_key=True, nullable=False)
+    venda_id_venda: Mapped[int] = mapped_column(INTEGER,ForeignKey(Venda.id_venda, ondelete="CASCADE"), primary_key=True, nullable=False)
     quantidade: Mapped[int] = mapped_column(SMALLINT, nullable=False)
     preco: Mapped[float] = mapped_column(FLOAT, nullable=False)
 
@@ -301,64 +300,3 @@ session.delete(categoria_para_excluir)
 
 # Confirmar as exclusões na sessão
 session.commit()
-
-
-
-
-
-
-# Criar uma sessão (msm codigo de exclusao d cima com algumas mudancas pra ver se roda, verificar)
-session = Session(bind=engine)
-
-try:
-    # Excluir um registro da tabela Avaliacao
-    avaliacao_para_excluir = session.query(Avaliacao).filter(Avaliacao.id_avaliacao == 1).one_or_none()
-    if avaliacao_para_excluir:
-        session.delete(avaliacao_para_excluir)
-        print("Avaliacao excluída.")
-    else:
-        print("Avaliacao não encontrada.")
-
-    # Excluir um registro da tabela Livro
-    livro_para_excluir = session.query(Livro).filter(Livro.id_livro == 1).one_or_none()
-    if livro_para_excluir:
-        session.delete(livro_para_excluir)
-        print("Livro excluído.")
-    else:
-        print("Livro não encontrado.")
-
-    # Excluir um registro da tabela Metodo_pagamento
-    metodo_pagamento_para_excluir = session.query(Metodo_pagamento).filter(Metodo_pagamento.id_metodo_pagamento == 1).one_or_none()
-    if metodo_pagamento_para_excluir:
-        session.delete(metodo_pagamento_para_excluir)
-        print("Método de pagamento excluído.")
-    else:
-        print("Método de pagamento não encontrado.")
-
-    # Excluir um registro da tabela Cliente
-    cliente_para_excluir = session.query(Cliente).filter(Cliente.id_cliente == 1).one_or_none()
-    if cliente_para_excluir:
-        session.delete(cliente_para_excluir)
-        print("Cliente excluído.")
-    else:
-        print("Cliente não encontrado.")
-
-    # Excluir um registro da tabela Categoria
-    categoria_para_excluir = session.query(Categoria).filter(Categoria.id_categoria == 1).one_or_none()
-    if categoria_para_excluir:
-        session.delete(categoria_para_excluir)
-        print("Categoria excluída.")
-    else:
-        print("Categoria não encontrada.")
-
-    # Confirmar as mudanças
-    session.commit()
-    print("Exclusões realizadas com sucesso.")
-
-except Exception as e:
-    session.rollback()
-    print(f"Ocorreu um erro: {e}")
-
-finally:
-    # Fechar a sessão
-    session.close()
