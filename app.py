@@ -14,6 +14,9 @@ class Autores(Base):
     nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
     data_nascimento: Mapped[date] = mapped_column(DATE, nullable=False)
     biografia: Mapped[str] = mapped_column(VARCHAR(255), nullable=True)
+    @classmethod
+    def buscar_por_nome(cls, nome):
+        return session.query(cls).filter(cls.nome == nome).all()
 
 class Livro(Base):
     __tablename__ = "livro"
@@ -23,6 +26,9 @@ class Livro(Base):
     quantidade_estoque: Mapped[int] = mapped_column(INTEGER, nullable=False)
     quantidade_vendidas: Mapped[int] = mapped_column(SMALLINT, nullable=False)
     data_publicacao: Mapped[date] = mapped_column(DATE, nullable=False)
+    @classmethod
+    def buscar_por_id(cls, id_livro):
+        return session.query(cls).get(id_livro)
 
 
 
@@ -31,6 +37,9 @@ class Metodo_pagamento(Base):
     id_metodo_pagamento: Mapped[int] = mapped_column(INTEGER, primary_key=True, nullable=False, autoincrement=True)
     parcelas: Mapped[int] = mapped_column(SMALLINT, nullable=False)
     tipo: Mapped[str] = mapped_column(VARCHAR(7), nullable=False)
+    @classmethod
+    def buscar_por_tipo(cls, tipo):
+        return session.query(cls).filter(cls.tipo == tipo).all()
 
 class Cliente(Base):
     __tablename__ = "cliente"
@@ -41,6 +50,9 @@ class Cliente(Base):
     cpf: Mapped[int] = mapped_column(SMALLINT, nullable=False)
     email: Mapped[str] = mapped_column(VARCHAR(50), nullable=False, unique=True)
     quantidade_compras: Mapped[int] = mapped_column(SMALLINT, nullable=False, default=0)
+    @classmethod
+    def buscar_por_email(cls, email):
+        return session.query(cls).filter(cls.email == email).all()
 
 class Avaliacao(Base):
     __tablename__ = "avaliacao"
@@ -50,12 +62,18 @@ class Avaliacao(Base):
     avaliador: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
     livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro, ondelete="CASCADE"), nullable=False)
     cliente_id_cliente: Mapped[int] = mapped_column(INTEGER,ForeignKey(Cliente.id_cliente, ondelete="CASCADE"), nullable=False)
+    @classmethod
+    def buscar_por_estrelas(cls, estrelas):
+        return session.query(cls).filter(cls.estrelas == estrelas).all()
 
 class Categoria(Base):
     __tablename__ = "categoria"
     id_categoria: Mapped[int] = mapped_column(INTEGER, primary_key=True,nullable=False, autoincrement=True)
     nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
     classificacao_indicativa: Mapped[int] = mapped_column(SMALLINT, nullable=False)
+    @classmethod
+    def buscar_por_nome(cls, nome):
+        return session.query(cls).filter(cls.nome == nome).all()
 
 class Editora(Base):
     __tablename__ = "editora"
@@ -63,6 +81,9 @@ class Editora(Base):
     data: Mapped[date] = mapped_column(DATE, nullable=False)
     nome: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
     exemplares_vendidos: Mapped[int] = mapped_column(INTEGER, nullable=False, default=0)
+    @classmethod
+    def buscar_por_exemplares_vendidos(cls, exemplares_vendidos):
+        return session.query(cls).filter(cls.exemplares_vendidos == exemplares_vendidos).all()
 
 class Venda(Base):
     __tablename__ = "venda"
@@ -70,21 +91,32 @@ class Venda(Base):
     data: Mapped[date] = mapped_column(DATE, nullable=False)
     metodo_pagamento_id_metodo_pagamento: Mapped[int] = mapped_column(INTEGER,ForeignKey(Metodo_pagamento.id_metodo_pagamento, ondelete="CASCADE"), nullable=False)
     cliente_id_cliente: Mapped[int] = mapped_column(INTEGER,ForeignKey(Cliente.id_cliente, ondelete="CASCADE"), nullable=False)
+    @classmethod
+    def buscar_por_data(cls, data):
+        return session.query(cls).filter(cls.data == data).all()
 
 class Livro_autores(Base):
     __tablename__ = "livro_has_autores"
     autor_id_autores: Mapped[int] = mapped_column(INTEGER,ForeignKey(Autores.id_autores, ondelete="CASCADE"), primary_key=True, nullable=False)
     livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro, ondelete="CASCADE"), primary_key=True, nullable=False)
+    @classmethod
+    def buscar_por_autor_id(cls, autor_id):
+        return session.query(cls).filter(cls.autor_id_autores == autor_id).all()
 
 class Livro_categoria(Base):
     __tablename__ = "livro_has_categoria"
     categoria_id_categoria: Mapped[int] = mapped_column(INTEGER,ForeignKey(Categoria.id_categoria, ondelete="CASCADE"), primary_key=True, nullable=False)
     livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro, ondelete="CASCADE"), primary_key=True, nullable=False)
+    def buscar_por_categoria_id(cls, categoria_id):
+        return session.query(cls).filter(cls.categoria_id_categoria == categoria_id).all()
 
 class Livro_editora(Base):
     __tablename__ = "livro_has_editora"
     editora_id_editora: Mapped[int] = mapped_column(INTEGER,ForeignKey(Editora.id_editora, ondelete="CASCADE"), primary_key=True, nullable=False)
     livro_id_livro: Mapped[int] = mapped_column(INTEGER,ForeignKey(Livro.id_livro, ondelete="CASCADE"), primary_key=True, nullable=False)
+    @classmethod
+    def buscar_por_editora_id(cls, editora_id):
+        return session.query(cls).filter(cls.editora_id_editora == editora_id).all()
 
 class Livro_venda(Base):
     __tablename__ = "livro_has_venda"
@@ -92,6 +124,9 @@ class Livro_venda(Base):
     venda_id_venda: Mapped[int] = mapped_column(INTEGER,ForeignKey(Venda.id_venda, ondelete="CASCADE"), primary_key=True, nullable=False)
     quantidade: Mapped[int] = mapped_column(SMALLINT, nullable=False)
     preco: Mapped[float] = mapped_column(FLOAT, nullable=False)
+    @classmethod
+    def buscar_por_quantidade(cls, quantidade):
+        return session.query(cls).filter(cls.quantidade == quantidade).all()
 
 Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
@@ -300,3 +335,127 @@ session.delete(categoria_para_excluir)
 
 # Confirmar as exclusões na sessão
 session.commit()
+
+
+def consultar_dados():
+    # Consulta 1: Buscar autores pelo nome
+    autores_por_nome = Autores.buscar_por_nome("Autor 1")
+    print("Autores encontrados pelo nome 'Autor 1':")
+    for autor in autores_por_nome:
+        print(f"ID: {autor.id_autores}, Nome: {autor.nome}")
+
+    # Consulta 2: Buscar livro pelo ID
+    livro_por_id = Livro.buscar_por_id(2)
+    print("\nLivro encontrado pelo ID 2:")
+    print(f"ID: {livro_por_id.id_livro}, Nome: {livro_por_id.nome}")
+
+    # Consulta 3: Buscar método de pagamento pelo tipo
+    metodo_pagamento_por_tipo = Metodo_pagamento.buscar_por_tipo("Crédito")
+    print("\nMétodo de pagamento encontrado pelo tipo 'Crédito':")
+    for metodo in metodo_pagamento_por_tipo:
+        print(f"ID: {metodo.id_metodo_pagamento}, Tipo: {metodo.tipo}")
+
+    # Consulta 4: Buscar cliente pelo email
+    cliente_por_email = Cliente.buscar_por_email("cliente3@example.com")
+    print("\nCliente encontrado pelo email 'cliente3@example.com':")
+    for cliente in cliente_por_email:
+        print(f"ID: {cliente.id_cliente}, Nome: {cliente.nome}")
+
+    # Consulta 5: Buscar avaliações por estrelas
+    avaliacoes_por_estrelas = Avaliacao.buscar_por_estrelas(5)
+    print("\nAvaliações encontradas com 5 estrelas:")
+    for avaliacao in avaliacoes_por_estrelas:
+        print(f"ID: {avaliacao.id_avaliacao}, Estrelas: {avaliacao.estrelas}")
+
+    # Consulta 6: Buscar categorias pelo nome
+    categorias_por_nome = Categoria.buscar_por_nome("Ficção")
+    print("\nCategorias encontradas pelo nome 'Ficção':")
+    for categoria in categorias_por_nome:
+        print(f"ID: {categoria.id_categoria}, Nome: {categoria.nome}")
+
+    # Consulta 7: Buscar editoras pelo número de exemplares vendidos
+    editoras_por_exemplares = Editora.buscar_por_exemplares_vendidos(600)
+    print("\nEditoras encontradas com 600 exemplares vendidos:")
+    for editora in editoras_por_exemplares:
+        print(f"ID: {editora.id_editora}, Nome: {editora.nome}")
+
+    # Consulta 8: Buscar vendas por data
+    vendas_por_data = Venda.buscar_por_data(date(2023, 2, 2))
+    print("\nVendas encontradas na data '2023-02-02':")
+    for venda in vendas_por_data:
+        print(f"ID: {venda.id_venda}, Data: {venda.data}")
+
+    # Consulta 9: Buscar livros por autor ID
+    livros_por_autor_id = Livro_autores.buscar_por_autor_id(3)
+    print("\nLivros encontrados pelo ID do autor 3:")
+    for livro in livros_por_autor_id:
+        print(f"ID do Livro: {livro.livro_id_livro}")
+
+
+    # Consulta 10: Buscar livros por editora ID
+    livros_por_editora_id = Livro_editora.buscar_por_editora_id(3)
+    print("\nLivros encontrados pelo ID da editora 3:")
+    for livro in livros_por_editora_id:
+        print(f"ID do Livro: {livro.livro_id_livro}")
+
+    # Consulta 11: Buscar vendas por quantidade
+    vendas_por_quantidade = Livro_venda.buscar_por_quantidade(2)
+    print("\nVendas encontradas com quantidade 2:")
+    for venda in vendas_por_quantidade:
+        print(f"ID da Venda: {venda.venda_id_venda}")
+
+    # Consulta 12: Buscar autores pelo nome
+    autores_por_nome = Autores.buscar_por_nome("Autor 1", session)
+    print("Autores encontrados pelo nome 'Autor 1':")
+    for autor in autores_por_nome:
+        print(f"ID: {autor.id_autores}, Nome: {autor.nome}")
+
+    # Consulta 13: Buscar livro pelo ID
+    livro_por_id = Livro.buscar_por_id(2, session)
+    print("\nLivro encontrado pelo ID 2:")
+    if livro_por_id:
+        print(f"ID: {livro_por_id.id_livro}, Nome: {livro_por_id.nome}")
+
+    # Consulta 14: Buscar método de pagamento pelo tipo
+    metodo_pagamento_por_tipo = Metodo_pagamento.buscar_por_tipo("Crédito", session)
+    print("\nMétodo de pagamento encontrado pelo tipo 'Crédito':")
+    for metodo in metodo_pagamento_por_tipo:
+        print(f"ID: {metodo.id_metodo_pagamento}, Tipo: {metodo.tipo}")
+
+    # Consulta 15: Buscar cliente pelo email
+    cliente_por_email = Cliente.buscar_por_email("cliente3@example.com", session)
+    print("\nCliente encontrado pelo email 'cliente3@example.com':")
+    for cliente in cliente_por_email:
+        print(f"ID: {cliente.id_cliente}, Nome: {cliente.nome}")
+
+    # Consulta 16: Buscar avaliação por estrelas
+    avaliacao_por_estrelas = Avaliacao.buscar_por_estrelas(5, session)
+    print("\nAvaliações com 5 estrelas:")
+    for avaliacao in avaliacao_por_estrelas:
+        print(f"ID: {avaliacao.id_avaliacao}, Estrelas: {avaliacao.estrelas}")
+
+    # Consulta 17: Buscar categoria pelo nome
+    categoria_por_nome = Categoria.buscar_por_nome("Ficção", session)
+    print("\nCategorias com o nome 'Ficção':")
+    for categoria in categoria_por_nome:
+        print(f"ID: {categoria.id_categoria}, Nome: {categoria.nome}")
+
+    # Consulta 18: Buscar editora por exemplares vendidos
+    editora_por_exemplares = Editora.buscar_por_exemplares_vendidos(1000, session)
+    print("\nEditoras com 1000 exemplares vendidos:")
+    for editora in editora_por_exemplares:
+        print(f"ID: {editora.id_editora}, Nome: {editora.nome}")
+
+    # Consulta 19: Buscar venda por data
+    venda_por_data = Venda.buscar_por_data(date(2023, 5, 1), session)
+    print("\nVendas na data '2023-05-01':")
+    for venda in venda_por_data:
+        print(f"ID: {venda.id_venda}, Data: {venda.data}")
+
+    # Consulta 20: Buscar Livro_autores por autor_id
+    livro_autores_por_autor_id = Livro_autores.buscar_por_autor_id(1, session)
+    print("\nLivros do autor com ID 1:")
+    for livro_autor in livro_autores_por_autor_id:
+        print(f"Autor ID: {livro_autor.autor_id_autores}, Livro ID: {livro_autor.livro_id_livro}")
+
+consultar_dados()
